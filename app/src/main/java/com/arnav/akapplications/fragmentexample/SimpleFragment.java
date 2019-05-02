@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,6 +30,14 @@ import android.widget.Toast;
 public class SimpleFragment extends Fragment {
     final static private int YES = 0;
     final static private int NO = 1;
+
+    private static final int NONE = 0;
+
+    private static final String CHOICE = "choice";
+
+    public int radioButtonChoice = NONE;
+
+    OnFragmentInteractionListener fragmentInteractionListener;
 
     RatingBar ratingBar;
 
@@ -56,8 +65,13 @@ public class SimpleFragment extends Fragment {
 //     * @return A new instance of fragment SimpleFragment.
 //     */
 //    // TODO: Rename and change types and number of parameters
-    public static SimpleFragment newInstance() {
-        return new SimpleFragment();
+    public static SimpleFragment newInstance(int choice)
+    {
+        SimpleFragment simpleFragment = new SimpleFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(CHOICE,choice);
+        simpleFragment.setArguments(arguments);
+        return simpleFragment;
     }
 
 
@@ -72,7 +86,7 @@ public class SimpleFragment extends Fragment {
 //    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -83,6 +97,16 @@ public class SimpleFragment extends Fragment {
         ratingBar = rootView.findViewById(R.id.ratingBar);
 //        LayerDrawable stars = (LayerDrawable)ratingBar.getProgressDrawable();
 //        stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+
+
+//        if(getArguments().containsKey(CHOICE))
+//        {
+//            radioButtonChoice = getArguments().getInt(CHOICE);
+//            if(radioButtonChoice != NONE)
+//            {
+//                radioGroup.check(radioGroup.getChildAt(radioButtonChoice).getId());
+//            }
+//        }
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -95,12 +119,17 @@ public class SimpleFragment extends Fragment {
                 {
                     case YES :
                         textView.setText(R.string.like_message);
+                        radioButtonChoice = YES;
+                        fragmentInteractionListener.onRadioButtonChoice(YES);
                         break;
                     case NO :
                         textView.setText(R.string.thanks_message);
+                        radioButtonChoice = NO;
+                        fragmentInteractionListener.onRadioButtonChoice(NO);
                         break;
 
                     default:
+
 
                         break;
                 }
@@ -118,6 +147,12 @@ public class SimpleFragment extends Fragment {
         return rootView;
     }
 
+    public interface OnFragmentInteractionListener
+    {
+        void onRadioButtonChoice(int choice);
+    }
+
+
 //    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
@@ -125,16 +160,16 @@ public class SimpleFragment extends Fragment {
 //        }
 //    }
 //
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            fragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 //
 //    @Override
 //    public void onDetach() {

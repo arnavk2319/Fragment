@@ -21,8 +21,8 @@
     <string name="question_article">LIKE THE ARTICLE?</string>
 
     <!-- Text for the button in FragmentExample2. -->
-    <string name= "open">Open</string>
-    <string name= "close">Close</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
     <string name="rating">Rating :</string>
     <string name="my_rating">My Rating : </string>
 
